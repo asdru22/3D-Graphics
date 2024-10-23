@@ -9,4 +9,11 @@ public class Vertex {
         this.y = y;
         this.z = z;
     }
+
+    public void normalize() {
+        double length = Math.sqrt(x * x + y * y + z * z);
+        x /= length;
+        y /= length;
+        z /= length;
+    }
 }
