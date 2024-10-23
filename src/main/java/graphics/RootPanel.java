@@ -2,13 +2,9 @@ package graphics;
 
 import block.GrassBlock;
 import math.Matrix3D;
-import block.Cube;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-
-import java.util.List;
 
 public class RootPanel extends JPanel {
     private final JSlider headingSlider = new JSlider(-180, 180, 0);
