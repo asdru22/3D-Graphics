@@ -1,5 +1,6 @@
 package block;
 
+import graphics.Camera;
 import graphics.Triangle;
 import graphics.Vertex;
 import math.Matrix3D;
@@ -60,21 +61,49 @@ public class Cube {
         triangles.add(new Triangle(v4, v7, v8, uv1, uv3, uv4, textures.get(Faces.BOTTOM)));
     }
 
-    public void draw(Graphics2D g2, double width, double height, Matrix3D transform) {
+    public void draw(Graphics2D g2, double width, double height, Matrix3D transform, Camera camera) {
         BufferedImage img = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
         double[] zBuffer = new double[img.getWidth() * img.getHeight()];
         Arrays.fill(zBuffer, Double.NEGATIVE_INFINITY);
-        for (Triangle t : triangles) {
-            Vertex v1 = transform.transform(t.v1);
-            v1.x += width / 2;
-            v1.y += height / 2;
-            Vertex v2 = transform.transform(t.v2);
-            v2.x += width / 2;
-            v2.y += height / 2;
-            Vertex v3 = transform.transform(t.v3);
-            v3.x += width / 2;
-            v3.y += height / 2;
 
+        // Get the view and projection matrices from the camera
+        Matrix3D viewMatrix = camera.getViewMatrix();
+        Matrix3D projectionMatrix = camera.getProjectionMatrix(width, height);
+
+        // Combine the transformation matrix, view matrix, and projection matrix
+        Matrix3D combinedMatrix = projectionMatrix.multiply(viewMatrix).multiply(transform);
+
+        for (Triangle t : triangles) {
+            Vertex v1 = combinedMatrix.transform(t.v1);
+            Vertex v2 = combinedMatrix.transform(t.v2);
+            Vertex v3 = combinedMatrix.transform(t.v3);
+
+            // Perspective divide (to handle projection transformation)
+            if (v1.w != 0) {
+                v1.x /= v1.w;
+                v1.y /= v1.w;
+                v1.z /= v1.w;
+            }
+            if (v2.w != 0) {
+                v2.x /= v2.w;
+                v2.y /= v2.w;
+                v2.z /= v2.w;
+            }
+            if (v3.w != 0) {
+                v3.x /= v3.w;
+                v3.y /= v3.w;
+                v3.z /= v3.w;
+            }
+
+            // Convert to screen coordinates
+            v1.x = (v1.x + 1) * width / 2;
+            v1.y = (v1.y + 1) * height / 2;
+            v2.x = (v2.x + 1) * width / 2;
+            v2.y = (v2.y + 1) * height / 2;
+            v3.x = (v3.x + 1) * width / 2;
+            v3.y = (v3.y + 1) * height / 2;
+
+            // Compute the normal for back-face culling
             Vertex ab = new Vertex(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
             Vertex ac = new Vertex(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
             Vertex norm = new Vertex(
@@ -88,12 +117,14 @@ public class Cube {
             norm.y /= normalLength;
             norm.z /= normalLength;
 
+            // Triangle bounding box for rasterization
             int minX = (int) Math.max(0, Math.ceil(Math.min(v1.x, Math.min(v2.x, v3.x))));
             int maxX = (int) Math.min(img.getWidth() - 1, Math.floor(Math.max(v1.x, Math.max(v2.x, v3.x))));
             int minY = (int) Math.max(0, Math.ceil(Math.min(v1.y, Math.min(v2.y, v3.y))));
             int maxY = (int) Math.min(img.getHeight() - 1, Math.floor(Math.max(v1.y, Math.max(v2.y, v3.y))));
             double triangleArea = (v1.y - v3.y) * (v2.x - v3.x) + (v2.y - v3.y) * (v3.x - v1.x);
 
+            // Rasterize the triangle
             for (int y = minY; y <= maxY; y++) {
                 for (int x = minX; x <= maxX; x++) {
                     double b1 = ((y - v3.y) * (v2.x - v3.x) + (v2.y - v3.y) * (v3.x - x)) / triangleArea;
@@ -104,7 +135,6 @@ public class Cube {
                         double depth = b1 * v1.z + b2 * v2.z + b3 * v3.z;
                         int zIndex = y * img.getWidth() + x;
                         if (zBuffer[zIndex] < depth) {
-                            // Calcolo delle coordinate di texture utilizzando l'interpolazione
                             double texX = b1 * t.v1u.x + b2 * t.v2u.x + b3 * t.v3u.x;
                             double texY = b1 * t.v1u.y + b2 * t.v2u.y + b3 * t.v3u.y;
                             int texPixel = t.texture.getRGB((int) (texX * (t.texture.getWidth() - 1)),
@@ -119,5 +149,6 @@ public class Cube {
         }
         g2.drawImage(img, 0, 0, null);
     }
+
 
 }

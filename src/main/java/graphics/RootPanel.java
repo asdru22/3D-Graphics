@@ -7,18 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RootPanel extends JPanel {
-    private final JSlider headingSlider = new JSlider(-180, 180, 0);
-    private final JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, -90, 90, 0);
+    private final Camera camera;
 
     public RootPanel(JFrame pane) {
-        pane.add(headingSlider, BorderLayout.SOUTH);
-        pane.add(pitchSlider, BorderLayout.EAST);
-        pane.add(this, BorderLayout.CENTER);
+        this.camera = new Camera(new Vertex(0, 10, -1), new Vertex(0, 0, 0), new Vertex(0, 1, 0),45); // Camera looking at the origin
 
-        headingSlider.addChangeListener(_ -> this.repaint());
-        pitchSlider.addChangeListener(_ -> this.repaint());
+        pane.add(this, BorderLayout.CENTER);
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.BLACK);
@@ -26,21 +23,10 @@ public class RootPanel extends JPanel {
 
         GrassBlock c = new GrassBlock(new Vertex(0, 0, 0));
 
-        double heading = Math.toRadians(headingSlider.getValue());
-        Matrix3D headingTransform = new Matrix3D(new double[]{
-                Math.cos(heading), 0, -Math.sin(heading),
-                0, 1, 0,
-                Math.sin(heading), 0, Math.cos(heading)
-        });
-        double pitch = Math.toRadians(pitchSlider.getValue());
-        Matrix3D pitchTransform = new Matrix3D(new double[]{
-                1, 0, 0,
-                0, Math.cos(pitch), Math.sin(pitch),
-                0, -Math.sin(pitch), Math.cos(pitch)
-        });
-        Matrix3D transform = headingTransform.multiply(pitchTransform);
+        // Get the camera's view matrix
+        Matrix3D viewTransform = camera.getViewMatrix();
 
-        c.draw(g2, getWidth(), getHeight(), transform);
-
+        // Draw the cube using the camera's view transformation
+        c.draw(g2, getWidth(), getHeight(), viewTransform, camera);
     }
 }
