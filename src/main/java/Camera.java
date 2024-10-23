@@ -67,7 +67,6 @@ public class Camera implements KeyListener{
         }
     }
     public void keyTyped(KeyEvent arg0) {
-        // TODO Auto-generated method stub
 
     }
 }
