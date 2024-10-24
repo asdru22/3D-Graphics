@@ -1,60 +1,27 @@
-import javax.swing.*;
+package geom;
+
+import math.Float2D;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
-import javax.imageio.ImageIO;
 
-public class Rasterizer extends JPanel {
-
-    private final Float2D[] vertices = new Float2D[]{
-            new Float2D(340, 340),
-            new Float2D(380, 340),
-            new Float2D(340, 380),
-            new Float2D(380, 380)
-    };
-    private final Float2D[] texCoords = new Float2D[]{
-            new Float2D(0, 0),
-            new Float2D(1, 0),
-            new Float2D(0, 1),
-            new Float2D(1, 1)
-    };
+public class Triangle {
+    private Float2D v0, v1, v2;
+    private Float2D uv0, uv1, uv2;
     private BufferedImage texture;
-    private float angle = 0.0f;
 
-    public Rasterizer(JFrame pane) {
-        try {
-            // Carica l'immagine dalla cartella delle risorse
-            texture = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/dirt.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pane.add(this, BorderLayout.CENTER);
-        Timer timer = new Timer(1000 / 60, _ -> {
-            angle += (float) Math.toRadians(1);
-            repaint();
-        });
-        timer.start();
+    public Triangle(Float2D v0, Float2D v1, Float2D v2, Float2D uv0,
+                    Float2D uv1, Float2D uv2, BufferedImage texture) {
+        this.v0 = v0;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.uv0 = uv0;
+        this.uv1 = uv1;
+        this.uv2 = uv2;
+        this.texture = texture;
     }
 
-    public void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        // black background
-        g2.setColor(Color.BLACK);
-        g2.fillRect(0, 0, getWidth(), getHeight());
-        Float2D center = new Float2D((float) getWidth() / 2, (float) getHeight() / 2);
-        // Ruota i vertici
-        Float2D v0 = Float2D.rotate(vertices[0], center, angle);
-        Float2D v1 = Float2D.rotate(vertices[1], center, angle);
-        Float2D v2 = Float2D.rotate(vertices[2], center, angle);
-        Float2D v3 = Float2D.rotate(vertices[3], center, angle);
-        // Disegna i triangoli con la texture
-        drawTexturedTriangle(g2, v0, v1, v2, texCoords[0], texCoords[1], texCoords[2]);
-        drawTexturedTriangle(g2, v1, v3, v2, texCoords[1], texCoords[3], texCoords[2]);
-    }
-
-    private void drawTexturedTriangle(Graphics2D g, Float2D v0, Float2D v1, Float2D v2,
-                                      Float2D uv0, Float2D uv1, Float2D uv2) {
+    public void draw(Graphics2D g) {
         // bounding box
         int xMin = (int) Math.floor(Math.min(v0.x, Math.min(v1.x, v2.x)));
         int xMax = (int) Math.ceil(Math.max(v0.x, Math.max(v1.x, v2.x)));
@@ -71,9 +38,9 @@ public class Rasterizer extends JPanel {
 
         // area of the parallelogram
         float area = Float2D.edgeCross(v0, v1, v2);
-        float bias0 = isTopLeft(v1, v2) ? 0.0f : -0.0001f,
-                bias1 = isTopLeft(v0, v2) ? 0.0f : -0.0001f,
-                bias2 = isTopLeft(v0, v1) ? 0.0f : -0.0001f;
+        float bias0 = Float2D.isTopLeft(v1, v2) ? 0.0f : -0.0001f,
+                bias1 = Float2D.isTopLeft(v0, v2) ? 0.0f : -0.0001f,
+                bias2 = Float2D.isTopLeft(v0, v1) ? 0.0f : -0.0001f;
 
         // point at the top left of the bounding box
         Float2D p0 = new Float2D(xMin, yMin);
@@ -117,12 +84,5 @@ public class Rasterizer extends JPanel {
             w1Row += deltaW1Row;
             w2Row += deltaW2Row;
         }
-    }
-
-    private boolean isTopLeft(Float2D start, Float2D end) {
-        Float2D edge = Float2D.getEdge(start, end);
-        boolean isTopEdge = edge.y == 0 && edge.x > 0;
-        boolean isLeftEdge = edge.x == 0 && edge.y > 0;
-        return isTopEdge || isLeftEdge;
     }
 }

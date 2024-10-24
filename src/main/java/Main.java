@@ -1,3 +1,5 @@
+import graphics.Rasterizer;
+
 import javax.swing.*;
 import java.awt.*;
 

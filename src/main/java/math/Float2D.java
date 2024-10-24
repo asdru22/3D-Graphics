@@ -1,3 +1,5 @@
+package math;
+
 public class Float2D {
     public float x, y;
     public Float2D(float x, float y) {
@@ -71,9 +73,16 @@ public class Float2D {
         return new Float2D(x, y);
     }
 
+    public static boolean isTopLeft(Float2D start, Float2D end) {
+        Float2D edge = Float2D.getEdge(start, end);
+        boolean isTopEdge = edge.y == 0 && edge.x > 0;
+        boolean isLeftEdge = edge.x == 0 && edge.y > 0;
+        return isTopEdge || isLeftEdge;
+    }
+
     @Override
     public String toString() {
-        return "Float2D(" + x + ", " + y + ")";
+        return "math.Float2D(" + x + ", " + y + ")";
     }
 
 }
