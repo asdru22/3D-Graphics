@@ -1,11 +1,12 @@
 package block;
 
+import geom.Cube;
 import graphics.Vertex;
 import util.Texture;
 
 import java.util.HashMap;
 
-public class GrassBlock extends Cube{
+public class GrassBlock extends Cube {
     public GrassBlock(Vertex Position) {
         super(Position, new HashMap<>() {{
             put(Faces.BOTTOM, Texture.getTexture("dirt"));

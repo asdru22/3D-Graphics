@@ -1,4 +1,4 @@
-import graphics.RootPanel;
+import graphics.Root;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +10,12 @@ public class Main {
         Container pane = frame.getContentPane();
         pane.setLayout(new BorderLayout());
 
-        RootPanel r = new RootPanel(frame);
+        Root r = new Root(frame);
 
         frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        frame.setTitle("3D Graphics");
     }
 }
 

@@ -5,8 +5,11 @@ import block.GrassBlock;
 import javax.swing.*;
 import java.awt.*;
 
-public class RootPanel extends JPanel {
-    public RootPanel(JFrame pane) {
+public class Root extends JPanel {
+
+    public static Camera cam;
+
+    public Root(JFrame pane) {
         pane.add(this, BorderLayout.CENTER);
     }
 
@@ -15,7 +18,9 @@ public class RootPanel extends JPanel {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, getWidth(), getHeight());
 
-        GrassBlock c = new GrassBlock(new Vertex(0, 0, 0));
+        cam = new Camera( getWidth(), getHeight(), new Vertex(0, 500, 1000));
+
+        GrassBlock c = new GrassBlock(new Vertex(0 , 0, 0));
 
         c.draw(g2, getWidth(), getHeight());
     }

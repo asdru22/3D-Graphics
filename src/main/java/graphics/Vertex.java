@@ -16,4 +16,19 @@ public class Vertex {
         y /= length;
         z /= length;
     }
+
+    // Prodotto vettoriale
+    public static Vertex crossProduct(Vertex a, Vertex b) {
+        return new Vertex(
+                a.y * b.z - a.z * b.y,
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x
+        );
+    }
+
+    // Prodotto scalare
+    public static double dotProduct(Vertex a, Vertex b) {
+        return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
 }
