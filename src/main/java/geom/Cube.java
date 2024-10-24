@@ -1,5 +1,6 @@
 package geom;
 
+import graphics.Camera;
 import graphics.Vertex;
 
 import java.awt.*;
@@ -18,10 +19,10 @@ public class Cube {
 
     private final ArrayList<Triangle> triangles = new ArrayList<>();
     private final Vertex position;
-    private final int scale = 100;
+    private final int scale = 50;
 
-    public Cube(Vertex Position, HashMap<Faces, BufferedImage> textures) {
-        this.position = Position;
+    public Cube(int x, int y, int z, HashMap<Faces, BufferedImage> textures) {
+        this.position = new Vertex(x, -y, z);
 
         Vertex offset = this.position;
 
@@ -61,14 +62,12 @@ public class Cube {
         triangles.add(new Triangle(v4, v7, v8, uv1, uv3, uv4, textures.get(Faces.BOTTOM)));
     }
 
-    public void draw(Graphics2D g2, double width, double height) {
-        BufferedImage img = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
-        double[] zBuffer = new double[img.getWidth() * img.getHeight()];
-        Arrays.fill(zBuffer, Double.NEGATIVE_INFINITY);
+    public void draw(Graphics2D g2, BufferedImage img, double[] zBuffer, Camera cam) {
+        int width = img.getWidth();
+        int height = img.getHeight();
 
         for (Triangle t : triangles) {
             t.draw(cam.getPerspective(), width, height, img, zBuffer);
         }
-        g2.drawImage(img, 0, 0, null);
     }
 }
