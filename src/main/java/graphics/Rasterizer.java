@@ -54,11 +54,11 @@ public class Rasterizer extends JPanel {
         Float2D v2 = Float2D.rotate(vertices[2], center, angle);
         Float2D v3 = Float2D.rotate(vertices[3], center, angle);
         // Disegna i triangoli con la texture
-        Triangle t1 = new Triangle(v0, v1, v2, texCoords[0], texCoords[1], texCoords[2], texture);
-        Triangle t2 = new Triangle(v1, v3, v2, texCoords[1], texCoords[3], texCoords[2], texture);
+        Triangle t1 = new Triangle(v0, v1, v2, new Float2D(0, 0), new Float2D(1, 0),
+                new Float2D(0, 1), texture);
+        Triangle t2 = new Triangle(v1, v3, v2, new Float2D(1, 0),
+                new Float2D(1, 1), new Float2D(0, 1), texture);
         t1.draw(g2);
         t2.draw(g2);
     }
-
-
 }

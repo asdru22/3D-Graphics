@@ -6,9 +6,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Triangle {
-    private Float2D v0, v1, v2;
-    private Float2D uv0, uv1, uv2;
-    private BufferedImage texture;
+    private final Float2D v0, v1, v2;
+    private final Float2D uv0, uv1, uv2;
+    private final BufferedImage texture;
 
     public Triangle(Float2D v0, Float2D v1, Float2D v2, Float2D uv0,
                     Float2D uv1, Float2D uv2, BufferedImage texture) {
@@ -57,7 +57,7 @@ public class Triangle {
                 boolean isInside = (w0 >= 0 && w1 >= 0 && w2 >= 0);
 
                 if (isInside) {
-                    // alpha, beta, gamma baricentric coords
+                    // alpha, beta, gamma barycentric coords
                     float alpha = w0 / area;
                     float beta = w1 / area;
                     float gamma = w2 / area;
