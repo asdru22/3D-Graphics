@@ -1,10 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Rasterizer extends JPanel {
-    private Float2D[] vertices = new Float2D[]{
+    private final Float2D[] vertices = new Float2D[]{
             new Float2D(340, 340),
             new Float2D(380, 340),
             new Float2D(340, 380),
@@ -13,16 +11,13 @@ public class Rasterizer extends JPanel {
     };
 
     private float angle = 0.0f;
-    private Timer timer;
 
     public Rasterizer(JFrame pane) {
         pane.add(this, BorderLayout.CENTER);
-        timer = new Timer(1000 / 60, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                angle += (float) Math.toRadians(1); // Incrementare l'angolo di 1 grado in radianti
-                repaint(); // Richiamare il metodo per ridisegnare il pannello
-            }
+
+        Timer timer = new Timer(1000 / 60, _ -> {
+            angle += (float) Math.toRadians(1);
+            repaint();
         });
         timer.start();
     }
@@ -33,7 +28,7 @@ public class Rasterizer extends JPanel {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, getWidth(), getHeight());
 
-        Float2D center = new Float2D(getWidth() / 2, getHeight() / 2);
+        Float2D center = new Float2D((float) getWidth() / 2, (float) getHeight() / 2);
         Float2D v0 = Float2D.rotate(vertices[0], center, angle);
         Float2D v1 = Float2D.rotate(vertices[1], center, angle);
         Float2D v2 = Float2D.rotate(vertices[2], center, angle);
@@ -78,7 +73,7 @@ public class Rasterizer extends JPanel {
                 bias1 = isTopLeft(v0, v2) ? 0.0f : -0.0001f,
                 bias2 = isTopLeft(v0, v1) ? 0.0f : -0.0001f;
 
-        // topleft most point
+        // point at the top left of the bounding box
         Float2D p0 = new Float2D(xMin, yMin);
 
         int w0Row = (int) ((int) Float2D.edgeCross(v1, v2, p0) + bias0);

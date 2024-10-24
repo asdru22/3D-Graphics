@@ -5,6 +5,11 @@ public class Float2D {
         this.y = y;
     }
 
+    public Float2D() {
+        this.x = 0;
+        this.y = 0;
+    }
+
     public void add(Float2D other) {
         this.x += other.x;
         this.y += other.y;
@@ -52,15 +57,18 @@ public class Float2D {
     }
 
     public static Float2D rotate(Float2D v, Float2D center, double angle){
-        Float2D rot = new Float2D(0,0);
-        Float2D vCopy = new Float2D(v.x, v.y);
-        vCopy.x -= center.x;
-        vCopy.y -= center.y;
-        rot.x = (float) (vCopy.x * Math.cos(angle) - vCopy.y * Math.sin(angle));
-        rot.y = (float) (vCopy.x * Math.sin(angle) + vCopy.y * Math.cos(angle));
-        rot.x += center.x;
-        rot.y += center.y;
+        Float2D vOffset = v.copy();
+        vOffset.sub(center);
+        Float2D rot = new Float2D(
+                (float) (vOffset.x * Math.cos(angle) - vOffset.y * Math.sin(angle)),
+                (float) (vOffset.x * Math.sin(angle) + vOffset.y * Math.cos(angle))
+        );
+        rot.add(center);
         return rot;
+    }
+
+    public Float2D copy() {
+        return new Float2D(x, y);
     }
 
     @Override
