@@ -11,10 +11,13 @@ public class Camera {
     Vertex position;
     Vertex direction = new Vertex(0, -0.5, -1);
     Matrix4D perspectiveMatrix;
+    public double width, height;
 
     public Camera(double width, double height, Vertex position) {
         this.position = position;
         this.aspectRatio = width / height;
+        this.width = width;
+        this.height = height;
         perspectiveMatrix = createPerspectiveMatrix(fov, aspectRatio, near, far, position, direction);
     }
 

@@ -1,8 +1,5 @@
 package core;
 
-import block.GrassBlock;
-import graphics.Camera;
-import graphics.Vertex;
 import io.InputHandler;
 
 import javax.swing.*;
@@ -25,7 +22,7 @@ public class RenderingPanel extends JPanel implements Runnable {
         this.addKeyListener(inputHandler.keyHandler);
         this.addMouseMotionListener(inputHandler.mousePosHandler);
         this.addMouseListener(inputHandler.mouseListenerHandler);
-        this.scene = new RenderingScene(this);
+        this.scene = new RenderingScene(frame.getWidth(),frame.getHeight());
         this.frame = frame;
     }
 
@@ -49,8 +46,7 @@ public class RenderingPanel extends JPanel implements Runnable {
 
         // Draw the scene
         scene.draw(img,zBuffer);
-        //GrassBlock gblock = new GrassBlock(0, 0, 0);
-        //gblock.draw(img, zBuffer, new Camera(this.getWidth(), this.getHeight(), new Vertex(0, 500, 1000)));
+
         g2.drawImage(img, 0, 0, null);
     }
 

@@ -10,13 +10,13 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class RenderingScene {
-    private final RenderingPanel renderingPanel;
-    private Camera camera;
+    private final Camera camera;
     private final ArrayList<Cube> cubes = new ArrayList<>();
 
-    public RenderingScene(RenderingPanel renderingPanel) {
-        this.renderingPanel = renderingPanel;
-        this.camera = new Camera(renderingPanel.getWidth(), renderingPanel.getHeight(), new Vertex(0, 500, 1000));
+    public RenderingScene(int width,int height) {
+
+        this.camera = new Camera(width,height, new Vertex(0, 500, 1000));
+        System.out.println("INIT"+camera.width+","+camera.height);
         this.cubes.add(new GrassBlock(0, 0, 0));
         this.cubes.add(new Dirt(0, -100, 0));
 
@@ -27,6 +27,7 @@ public class RenderingScene {
     }
 
     public void draw(BufferedImage img, double[] zBuffer) {
+        // Update the camera in the draw method to ensure correct dimensions
         for (Cube cube : cubes) {
             cube.draw(img, zBuffer, camera);
         }
