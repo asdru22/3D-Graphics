@@ -31,4 +31,8 @@ public class Vertex {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
+    @Override
+    public String toString() {
+        return "Vertex(x: " + x + ", y: " + y + ", z: " + z + ")";
+    }
 }

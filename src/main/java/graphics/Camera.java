@@ -3,28 +3,33 @@ package graphics;
 import math.Matrix4D;
 
 public class Camera {
-    // Parametri per la proiezione prospettica
-    double fov = 90.0;
-    double aspectRatio;
-    double near = 0.1;
-    double far = 1000.0;
-    Vertex position;
-    Vertex direction = new Vertex(0, -0.5, -1);
-    Matrix4D perspectiveMatrix;
-    public double width, height;
+    // Perspective projection parameters
+    private final double fov = 90.0;
+    private final double aspectRatio;
+    private final double near = 0.1;
+    private final double far = 1000.0;
+    public final double width, height;
+
+    private Vertex position;
+    private Vertex direction = new Vertex(0, 0, -1);
+    private Matrix4D perspectiveMatrix;
 
     public Camera(double width, double height, Vertex position) {
         this.position = position;
         this.aspectRatio = width / height;
         this.width = width;
         this.height = height;
+        updatePerspective();
+    }
+
+    public void updatePerspective() {
         perspectiveMatrix = createPerspectiveMatrix(fov, aspectRatio, near, far, position, direction);
     }
 
     private Matrix4D createPerspectiveMatrix(double fov, double aspectRatio, double near, double far, Vertex position, Vertex direction) {
         double tanFovOver2 = Math.tan(Math.toRadians(fov) / 2);
 
-        // Matrice di proiezione prospettica
+        // Perspective projection matrix
         Matrix4D perspectiveMatrix = new Matrix4D();
         perspectiveMatrix.m11 = 1 / (aspectRatio * tanFovOver2);
         perspectiveMatrix.m22 = 1 / tanFovOver2;
@@ -63,5 +68,57 @@ public class Camera {
 
     public Matrix4D getPerspective() {
         return perspectiveMatrix;
+    }
+
+    public Vertex getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vertex position) {
+        this.position = position;
+        updatePerspective();
+    }
+
+    public void moveForward(double amount) {
+        this.position.z -= amount;
+        updatePerspective();
+    }
+
+    public void moveBack(double amount) {
+        this.position.z += amount;
+        updatePerspective();
+
+    }
+
+    public void moveLeft(double amount) {
+        this.position.x += amount;
+        updatePerspective();
+
+    }
+
+    public void moveRight(double amount) {
+        this.position.x -= amount;
+        updatePerspective();
+
+    }
+
+    public void moveUp(double amount) {
+        this.position.y -= amount;
+        updatePerspective();
+
+    }
+
+    public void moveDown(double amount) {
+        this.position.y += amount;
+        updatePerspective();
+    }
+
+    public void setHorizontalRotation(double angle){
+        this.direction.x = (float) Math.sin(Math.toRadians(angle));
+    }
+
+    public void setVerticalRotation(double angle){
+        this.direction.y = (float) Math.sin(Math.toRadians(angle));
+        updatePerspective();
     }
 }

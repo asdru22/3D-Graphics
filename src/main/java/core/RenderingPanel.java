@@ -22,7 +22,7 @@ public class RenderingPanel extends JPanel implements Runnable {
         this.addKeyListener(inputHandler.keyHandler);
         this.addMouseMotionListener(inputHandler.mousePosHandler);
         this.addMouseListener(inputHandler.mouseListenerHandler);
-        this.scene = new RenderingScene(frame.getWidth(),frame.getHeight());
+        this.scene = new RenderingScene(frame.getWidth(),frame.getHeight(), inputHandler);
         this.frame = frame;
     }
 
