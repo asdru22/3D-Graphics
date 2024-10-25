@@ -6,7 +6,9 @@ import geom.Cube;
 import graphics.Camera;
 import graphics.Vertex;
 import io.InputHandler;
+import io.MousePositionHandler;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -28,21 +30,36 @@ public class RenderingScene {
     }
 
     public void update() {
+        if (inputHandler.keyHandler.escapePressed) {
+            System.exit(0);
+        }
         if (inputHandler.keyHandler.upPressed) camera.moveForward(1);
         if (inputHandler.keyHandler.downPressed) camera.moveBack(1);
         if (inputHandler.keyHandler.leftPressed) camera.moveLeft(1);
         if (inputHandler.keyHandler.rightPressed) camera.moveRight(1);
         if (inputHandler.keyHandler.spacePressed) camera.moveUp(1);
         if (inputHandler.keyHandler.shiftPressed) camera.moveDown(1);
-        int mouseX = inputHandler.mousePosHandler.x;
-        int mouseY = inputHandler.mousePosHandler.y;
-        int deltaX = inputHandler.mousePosHandler.deltaX;
-        int deltaY = inputHandler.mousePosHandler.deltaY;
+
         double sensitivity = 0.2;
+        int centerX = (int) (camera.width / 2);
+        int centerY = (int) (camera.height / 2);
 
-        camera.addHorizontalRotation(deltaX * sensitivity);
+        try {
+            Robot robot = new Robot();
+            Point mousePos = MouseInfo.getPointerInfo().getLocation();
+            int deltaX = mousePos.x - centerX;
+            int deltaY = mousePos.y - centerY;
 
-        camera.addVerticalRotation(-deltaY * sensitivity);
+            if (deltaX != 0 || deltaY != 0) {
+                camera.addHorizontalRotation(deltaX * sensitivity);
+                camera.addVerticalRotation(-deltaY * sensitivity);
+            }
+
+            robot.mouseMove(centerX, centerY);
+
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
     }
 
     public void draw(BufferedImage img, double[] zBuffer) {

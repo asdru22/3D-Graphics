@@ -120,15 +120,12 @@ public class Camera {
         double radians = Math.toRadians(angle);
         direction.x += Math.sin(radians);
 
-        direction.normalize();
-        direction.z = -1;
     }
 
     public void addVerticalRotation(double angle) {
         double radians = Math.toRadians(angle);
         direction.y += Math.sin(radians);
-        direction.normalize();
-        direction.z = -1;
+
 
         updatePerspective();
     }
