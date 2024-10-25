@@ -39,14 +39,14 @@ public class Camera {
         perspectiveMatrix.m43 = -(2 * far * near) / (far - near);
         perspectiveMatrix.m44 = 0;
 
-        // Creazione di una matrice di visualizzazione usando la posizione e la direzione (camera look-at)
-        Vertex up = new Vertex(0, -1, 0); // Vettore "up" canonico
+        // Create a view matrix using position and direction (camera look-at)
+        Vertex up = new Vertex(0, -1, 0);
         direction.normalize();
         Vertex right = Vertex.crossProduct(up, direction);
         right.normalize();
-        up = Vertex.crossProduct(direction, right); // Ricalcola "up"
+        up = Vertex.crossProduct(direction, right);
 
-        // Matrice di visualizzazione
+        // View matrix
         Matrix4D viewMatrix = new Matrix4D();
         viewMatrix.m11 = right.x;
         viewMatrix.m12 = right.y;
@@ -63,7 +63,7 @@ public class Camera {
         viewMatrix.m33 = direction.z;
         viewMatrix.m34 = -Vertex.dotProduct(direction, position);
 
-        // Combinazione delle due matrici (prospettica e vista)
+        // Combine perspective and view matrix
         return perspectiveMatrix.multiply(viewMatrix);
     }
 

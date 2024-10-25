@@ -31,6 +31,12 @@ public class Vertex {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
+    // Funzione per normalizzare le coordinate ai NDC
+    public void normalizeToScreen(double width, double height) {
+        this.x = (this.x + 1) * 0.5 * width;
+        this.y = (this.y + 1) * 0.5 * height;
+    }
+
     @Override
     public String toString() {
         return "Vertex(x: " + x + ", y: " + y + ", z: " + z + ")";
