@@ -11,7 +11,7 @@ public class Camera {
     public double width, height;
 
     private Vertex position;
-    private Vertex direction = new Vertex(0, 0, -1);
+    private final Vertex direction = new Vertex(0, 0, -1);
     private Matrix4D perspectiveMatrix;
 
     public Camera(double width, double height, Vertex position) {
