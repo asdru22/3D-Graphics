@@ -5,10 +5,10 @@ import math.Matrix4D;
 public class Camera {
     // Perspective projection parameters
     private final double fov = 90.0;
-    private final double aspectRatio;
+    private double aspectRatio;
     private final double near = 0.1;
     private final double far = 1000.0;
-    public final double width, height;
+    public double width, height;
 
     private Vertex position;
     private Vertex direction = new Vertex(0, 0, -1);
@@ -23,11 +23,10 @@ public class Camera {
     }
 
     public void updatePerspective() {
-        perspectiveMatrix = createPerspectiveMatrix(fov, aspectRatio, near, far, position, direction);
+        perspectiveMatrix = createPerspectiveMatrix();
     }
 
-    private Matrix4D createPerspectiveMatrix(double fov, double aspectRatio, double near, double far,
-                                             Vertex position, Vertex direction) {
+    private Matrix4D createPerspectiveMatrix() {
         double tanFovOver2 = Math.tan(Math.toRadians(fov) / 2);
 
         // Perspective projection matrix
@@ -41,7 +40,8 @@ public class Camera {
 
         // Create a view matrix using position and direction (camera look-at)
         Vertex up = new Vertex(0, -1, 0);
-        direction.normalize();
+        Vertex dir = new Vertex(direction);
+        dir.normalize();
         Vertex right = Vertex.crossProduct(up, direction);
         right.normalize();
         up = Vertex.crossProduct(direction, right);
@@ -120,6 +120,13 @@ public class Camera {
 
     public void setVerticalRotation(double angle){
         this.direction.y = (float) Math.sin(Math.toRadians(angle));
+        updatePerspective();
+    }
+
+    public void resize(int width, int height){
+        this.width = width;
+        this.height = height;
+        aspectRatio = (double) width / height;
         updatePerspective();
     }
 }

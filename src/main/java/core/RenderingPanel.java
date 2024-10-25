@@ -1,5 +1,6 @@
 package core;
 
+import graphics.Camera;
 import io.InputHandler;
 
 import javax.swing.*;
@@ -91,5 +92,10 @@ public class RenderingPanel extends JPanel implements Runnable {
         update();
         // draw the screen with updated information
         repaint();
+    }
+
+    public void updateCameraSize(int width, int height){
+        Camera c = scene.getCamera();
+        c.resize(width,height);
     }
 }

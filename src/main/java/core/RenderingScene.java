@@ -16,10 +16,14 @@ public class RenderingScene {
     private final InputHandler inputHandler;
 
     public RenderingScene(int width, int height, InputHandler inputHandler) {
-        this.camera = new Camera(width, height, new Vertex(0, 0, 100));
+        this.camera = new Camera(width, height, new Vertex(0, 0, 500));
         this.inputHandler = inputHandler;
         this.cubes.add(new GrassBlock(0, 0, 0));
         this.cubes.add(new Dirt(0, -100, 0));
+        this.cubes.add(new Dirt(0, -200, 0));
+        this.cubes.add(new Dirt(0, -300, 0));
+        this.cubes.add(new Dirt(100, -300, 0));
+        this.cubes.add(new Dirt(-100, -300, 0));
 
     }
 
@@ -38,6 +42,10 @@ public class RenderingScene {
         for (Cube cube : cubes) {
             cube.draw(img, zBuffer, camera);
         }
+    }
+
+    public Camera getCamera(){
+        return camera;
     }
 
 }

@@ -10,6 +10,12 @@ public class Vertex {
         this.z = z;
     }
 
+    public Vertex(Vertex v) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+    }
+
     public void normalize() {
         double length = Math.sqrt(x * x + y * y + z * z);
         x /= length;
