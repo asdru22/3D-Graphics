@@ -26,7 +26,8 @@ public class Camera {
         perspectiveMatrix = createPerspectiveMatrix(fov, aspectRatio, near, far, position, direction);
     }
 
-    private Matrix4D createPerspectiveMatrix(double fov, double aspectRatio, double near, double far, Vertex position, Vertex direction) {
+    private Matrix4D createPerspectiveMatrix(double fov, double aspectRatio, double near, double far,
+                                             Vertex position, Vertex direction) {
         double tanFovOver2 = Math.tan(Math.toRadians(fov) / 2);
 
         // Perspective projection matrix
