@@ -2,6 +2,8 @@ package graphics;
 
 import math.Matrix4D;
 
+import java.util.Vector;
+
 public class Camera {
     // Perspective projection parameters
     private final double fov = 90.0;
@@ -114,19 +116,31 @@ public class Camera {
         updatePerspective();
     }
 
-    public void setHorizontalRotation(double angle){
-        this.direction.x = (float) Math.sin(Math.toRadians(angle));
+    public void addHorizontalRotation(double angle) {
+        double radians = Math.toRadians(angle);
+        direction.x += Math.sin(radians);
+
+        direction.normalize();
+        direction.z = -1;
     }
 
-    public void setVerticalRotation(double angle){
-        this.direction.y = (float) Math.sin(Math.toRadians(angle));
+    public void addVerticalRotation(double angle) {
+        double radians = Math.toRadians(angle);
+        direction.y += Math.sin(radians);
+        direction.normalize();
+        direction.z = -1;
+
         updatePerspective();
     }
 
-    public void resize(int width, int height){
+    public void resize(int width, int height) {
         this.width = width;
         this.height = height;
         aspectRatio = (double) width / height;
         updatePerspective();
+    }
+
+    public Vertex getRotation() {
+        return direction;
     }
 }

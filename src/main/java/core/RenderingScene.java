@@ -28,13 +28,21 @@ public class RenderingScene {
     }
 
     public void update() {
-        if(inputHandler.keyHandler.upPressed) camera.moveForward(1);
-        if(inputHandler.keyHandler.downPressed) camera.moveBack(1);
-        if(inputHandler.keyHandler.leftPressed) camera.moveLeft(1);
-        if(inputHandler.keyHandler.rightPressed) camera.moveRight(1);
-        if(inputHandler.keyHandler.spacePressed) camera.moveUp(1);
-        if(inputHandler.keyHandler.shiftPressed) camera.moveDown(1);
+        if (inputHandler.keyHandler.upPressed) camera.moveForward(1);
+        if (inputHandler.keyHandler.downPressed) camera.moveBack(1);
+        if (inputHandler.keyHandler.leftPressed) camera.moveLeft(1);
+        if (inputHandler.keyHandler.rightPressed) camera.moveRight(1);
+        if (inputHandler.keyHandler.spacePressed) camera.moveUp(1);
+        if (inputHandler.keyHandler.shiftPressed) camera.moveDown(1);
+        int mouseX = inputHandler.mousePosHandler.x;
+        int mouseY = inputHandler.mousePosHandler.y;
+        int deltaX = inputHandler.mousePosHandler.deltaX;
+        int deltaY = inputHandler.mousePosHandler.deltaY;
+        double sensitivity = 0.2;
 
+        camera.addHorizontalRotation(deltaX * sensitivity);
+
+        camera.addVerticalRotation(-deltaY * sensitivity);
     }
 
     public void draw(BufferedImage img, double[] zBuffer) {
@@ -44,7 +52,7 @@ public class RenderingScene {
         }
     }
 
-    public Camera getCamera(){
+    public Camera getCamera() {
         return camera;
     }
 
