@@ -6,10 +6,7 @@ import graphics.Vertex;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-
-import static graphics.Root.cam;
 
 public class Cube {
 
@@ -62,7 +59,7 @@ public class Cube {
         triangles.add(new Triangle(v4, v7, v8, uv1, uv3, uv4, textures.get(Faces.BOTTOM)));
     }
 
-    public void draw(Graphics2D g2, BufferedImage img, double[] zBuffer, Camera cam) {
+    public void draw(BufferedImage img, double[] zBuffer, Camera cam) {
         int width = img.getWidth();
         int height = img.getHeight();
 
