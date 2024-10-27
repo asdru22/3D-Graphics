@@ -18,7 +18,7 @@ public class RenderingScene {
     private final InputHandler inputHandler;
 
     public RenderingScene(int width, int height, InputHandler inputHandler) {
-        this.camera = new Camera(width, height, new Vertex(0, 0, 500));
+        this.camera = new Camera(width, height, new Vertex(0, 0, 1000));
         this.inputHandler = inputHandler;
         this.cubes.add(new GrassBlock(0, 0, 0));
         this.cubes.add(new Dirt(0, -100, 0));

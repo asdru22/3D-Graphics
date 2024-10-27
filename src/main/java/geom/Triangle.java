@@ -2,6 +2,8 @@ package geom;
 
 import graphics.Vertex;
 import math.Matrix4D;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -22,11 +24,11 @@ public class Triangle {
         this.texture = texture;
     }
 
-    public void draw(Matrix4D perspectiveMatrix, double width, double height, BufferedImage img, double[] zBuffer) {
+    public void draw(Matrix4f perspective, Matrix4f view, double width, double height, BufferedImage img, double[] zBuffer) {
         // Apply perspective projection
-        Vertex v1 = applyMatrix(perspectiveMatrix, this.v1);
-        Vertex v2 = applyMatrix(perspectiveMatrix, this.v2);
-        Vertex v3 = applyMatrix(perspectiveMatrix, this.v3);
+        Vertex v1 = transform(perspective,view,this.v1);
+        Vertex v2 = transform(perspective,view,this.v2);
+        Vertex v3 = transform(perspective,view,this.v3);
 
         // Normalize to device coordinates
         v1.normalizeToScreen(width, height);
@@ -78,11 +80,17 @@ public class Triangle {
         }
     }
 
-    private Vertex applyMatrix(Matrix4D matrix, Vertex vertex) {
-        double x = vertex.x * matrix.m11 + vertex.y * matrix.m12 + vertex.z * matrix.m13 + matrix.m14;
-        double y = vertex.x * matrix.m21 + vertex.y * matrix.m22 + vertex.z * matrix.m23 + matrix.m24;
-        double z = vertex.x * matrix.m31 + vertex.y * matrix.m32 + vertex.z * matrix.m33 + matrix.m34;
-        double w = vertex.x * matrix.m41 + vertex.y * matrix.m42 + vertex.z * matrix.m43 + matrix.m44;
+    private Vertex transform(Matrix4f perspective, Matrix4f view, Vertex vertex) {
+        Vector3f temp = new Vector3f((float) vertex.x, (float) vertex.y, (float) vertex.z).
+                mulPosition(perspective).mulPosition(view);
+        return new Vertex(temp.x, temp.y, temp.z);
+    }
+
+    private Vertex applyMatrix(Matrix4f matrix, Vertex vertex) {
+        double x = vertex.x * matrix.m00() + vertex.y * matrix.m10() + vertex.z * matrix.m20() + matrix.m30();
+        double y = vertex.x * matrix.m01() + vertex.y * matrix.m11() + vertex.z * matrix.m21() + matrix.m31();
+        double z = vertex.x * matrix.m02() + vertex.y * matrix.m12() + vertex.z * matrix.m22() + matrix.m32();
+        double w = vertex.x * matrix.m03() + vertex.y * matrix.m13() + vertex.z * matrix.m23() + matrix.m33();
 
         return new Vertex(x / w, y / w, z / w);
     }

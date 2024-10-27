@@ -2,6 +2,7 @@ package geom;
 
 import graphics.Camera;
 import graphics.Vertex;
+import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -62,9 +63,10 @@ public class Cube {
     public void draw(BufferedImage img, double[] zBuffer, Camera cam) {
         int width = img.getWidth();
         int height = img.getHeight();
-
+        Matrix4f persp = cam.getPerspective();
+        Matrix4f view = cam.getView();
         for (Triangle t : triangles) {
-            t.draw(cam.getPerspective(), width, height, img, zBuffer);
+            t.draw(persp, view, width, height, img, zBuffer);
         }
     }
 }

@@ -1,8 +1,7 @@
 package graphics;
 
-import math.Matrix4D;
-
-import java.util.Vector;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class Camera {
     // Perspective projection parameters
@@ -12,65 +11,60 @@ public class Camera {
     private final double far = 1000.0;
     public double width, height;
 
+    public final Vector3f X_AXIS = new Vector3f(1, 0, 0);
+    public final Vector3f Y_AXIS = new Vector3f(0, 1, 0);
+    public final Vector3f Z_AXIS = new Vector3f(0, 0, 1);
+
     private Vertex position;
     private final Vertex direction = new Vertex(0, 0, -1);
-    private Matrix4D perspectiveMatrix;
+    private Matrix4f perspectiveMatrix;
+    private Matrix4f viewMatrix;
 
     public Camera(double width, double height, Vertex position) {
         this.position = position;
         this.aspectRatio = width / height;
         this.width = width;
         this.height = height;
-        updatePerspective();
+        update();
     }
 
-    public void updatePerspective() {
-        perspectiveMatrix = createPerspectiveMatrix();
+    public void update() {
+        perspectiveMatrix = makeProjectionMatrix();
+        viewMatrix = makeViewMatrix();
+
     }
 
-    private Matrix4D createPerspectiveMatrix() {
-        double tanFovOver2 = Math.tan(Math.toRadians(fov) / 2);
+    public Matrix4f makeProjectionMatrix() {
 
-        // Perspective projection matrix
-        Matrix4D perspectiveMatrix = new Matrix4D();
-        perspectiveMatrix.m11 = 1 / (aspectRatio * tanFovOver2);
-        perspectiveMatrix.m22 = 1 / tanFovOver2;
-        perspectiveMatrix.m33 = -(far + near) / (far - near);
-        perspectiveMatrix.m34 = -1;
-        perspectiveMatrix.m43 = -(2 * far * near) / (far - near);
-        perspectiveMatrix.m44 = 0;
+        float yScale = (float) ((1f / Math.tan(Math.toRadians(fov / 2f))) * aspectRatio);
+        float xScale = (float) (yScale / aspectRatio);
+        var frustrumLength = far - near;
 
-        // Create a view matrix using position and direction (camera look-at)
-        Vertex up = new Vertex(0, -1, 0);
-        Vertex dir = new Vertex(direction);
-        dir.normalize();
-        Vertex right = Vertex.crossProduct(up, direction);
-        right.normalize();
-        up = Vertex.crossProduct(direction, right);
-
-        // View matrix
-        Matrix4D viewMatrix = new Matrix4D();
-        viewMatrix.m11 = right.x;
-        viewMatrix.m12 = right.y;
-        viewMatrix.m13 = right.z;
-        viewMatrix.m14 = -Vertex.dotProduct(right, position);
-
-        viewMatrix.m21 = up.x;
-        viewMatrix.m22 = up.y;
-        viewMatrix.m23 = up.z;
-        viewMatrix.m24 = -Vertex.dotProduct(up, position);
-
-        viewMatrix.m31 = direction.x;
-        viewMatrix.m32 = direction.y;
-        viewMatrix.m33 = direction.z;
-        viewMatrix.m34 = -Vertex.dotProduct(direction, position);
-
-        // Combine perspective and view matrix
-        return perspectiveMatrix.multiply(viewMatrix);
+        return new Matrix4f()
+                .m00(xScale)
+                .m11(yScale)
+                .m22((float) -((far + near) / frustrumLength))
+                .m23(-1)
+                .m32((float) -((2 * near * far) / frustrumLength))
+                .m33(0);
     }
 
-    public Matrix4D getPerspective() {
+    public Matrix4f makeViewMatrix() {
+        var negatedPosition = new Vector3f((float) -position.x, (float) -position.y, (float) -position.z);
+
+        return new Matrix4f()
+                .identity()
+                .rotate((float) Math.toRadians(direction.x), X_AXIS)
+                .rotate((float) Math.toRadians(direction.y), Y_AXIS)
+                .rotate((float) Math.toRadians(direction.z), Z_AXIS)
+                .translate(negatedPosition);
+    }
+
+    public Matrix4f getPerspective() {
         return perspectiveMatrix;
+    }
+    public Matrix4f getView() {
+        return viewMatrix;
     }
 
     public Vertex getPosition() {
@@ -79,41 +73,41 @@ public class Camera {
 
     public void setPosition(Vertex position) {
         this.position = position;
-        updatePerspective();
+        update();
     }
 
     public void moveForward(double amount) {
         this.position.z -= amount;
-        updatePerspective();
+        update();
     }
 
     public void moveBack(double amount) {
         this.position.z += amount;
-        updatePerspective();
+        update();
 
     }
 
     public void moveLeft(double amount) {
         this.position.x += amount;
-        updatePerspective();
+        update();
 
     }
 
     public void moveRight(double amount) {
         this.position.x -= amount;
-        updatePerspective();
+        update();
 
     }
 
     public void moveUp(double amount) {
         this.position.y -= amount;
-        updatePerspective();
+        update();
 
     }
 
     public void moveDown(double amount) {
         this.position.y += amount;
-        updatePerspective();
+        update();
     }
 
     public void addHorizontalRotation(double angle) {
@@ -125,19 +119,13 @@ public class Camera {
     public void addVerticalRotation(double angle) {
         double radians = Math.toRadians(angle);
         direction.y += Math.sin(radians);
-
-
-        updatePerspective();
+        update();
     }
 
     public void resize(int width, int height) {
         this.width = width;
         this.height = height;
         aspectRatio = (double) width / height;
-        updatePerspective();
-    }
-
-    public Vertex getRotation() {
-        return direction;
+        update();
     }
 }
