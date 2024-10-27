@@ -1,8 +1,8 @@
 package geom;
 
 import graphics.Camera;
-import graphics.Vertex;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,23 +16,23 @@ public class Cube {
     }
 
     private final ArrayList<Triangle> triangles = new ArrayList<>();
-    private final Vertex position;
+    private final Vector3f position;
     private final int scale = 50;
 
     public Cube(int x, int y, int z, HashMap<Faces, BufferedImage> textures) {
-        this.position = new Vertex(x, -y, z);
+        this.position = new Vector3f(x, -y, z);
 
-        Vertex offset = this.position;
+        Vector3f offset = this.position;
 
-        // Vertex Coordinates with offset
-        Vertex v1 = new Vertex(-scale + offset.x, -scale + offset.y, -scale + offset.z);
-        Vertex v2 = new Vertex(scale + offset.x, -scale + offset.y, -scale + offset.z);
-        Vertex v3 = new Vertex(scale + offset.x, scale + offset.y, -scale + offset.z);
-        Vertex v4 = new Vertex(-scale + offset.x, scale + offset.y, -scale + offset.z);
-        Vertex v5 = new Vertex(-scale + offset.x, -scale + offset.y, scale + offset.z);
-        Vertex v6 = new Vertex(scale + offset.x, -scale + offset.y, scale + offset.z);
-        Vertex v7 = new Vertex(scale + offset.x, scale + offset.y, scale + offset.z);
-        Vertex v8 = new Vertex(-scale + offset.x, scale + offset.y, scale + offset.z);
+        // Vector3f Coordinates with offset
+        Vector3f v1 = new Vector3f(-scale + offset.x, -scale + offset.y, -scale + offset.z);
+        Vector3f v2 = new Vector3f(scale + offset.x, -scale + offset.y, -scale + offset.z);
+        Vector3f v3 = new Vector3f(scale + offset.x, scale + offset.y, -scale + offset.z);
+        Vector3f v4 = new Vector3f(-scale + offset.x, scale + offset.y, -scale + offset.z);
+        Vector3f v5 = new Vector3f(-scale + offset.x, -scale + offset.y, scale + offset.z);
+        Vector3f v6 = new Vector3f(scale + offset.x, -scale + offset.y, scale + offset.z);
+        Vector3f v7 = new Vector3f(scale + offset.x, scale + offset.y, scale + offset.z);
+        Vector3f v8 = new Vector3f(-scale + offset.x, scale + offset.y, scale + offset.z);
 
         // UV Coordinates
         Point uv1 = new Point(0, 0);
@@ -61,12 +61,10 @@ public class Cube {
     }
 
     public void draw(BufferedImage img, double[] zBuffer, Camera cam) {
-        int width = img.getWidth();
-        int height = img.getHeight();
-        Matrix4f persp = cam.getPerspective();
+        Matrix4f perspective = cam.getPerspective();
         Matrix4f view = cam.getView();
         for (Triangle t : triangles) {
-            t.draw(persp, view, width, height, img, zBuffer);
+            t.draw(perspective, view, img, zBuffer);
         }
     }
 }

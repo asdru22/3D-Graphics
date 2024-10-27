@@ -1,7 +1,6 @@
 package block;
 
 import geom.Cube;
-import graphics.Vertex;
 import util.Texture;
 
 import java.util.HashMap;

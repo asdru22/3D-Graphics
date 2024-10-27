@@ -15,12 +15,12 @@ public class Camera {
     public final Vector3f Y_AXIS = new Vector3f(0, 1, 0);
     public final Vector3f Z_AXIS = new Vector3f(0, 0, 1);
 
-    private Vertex position;
-    private final Vertex direction = new Vertex(0, 0, -1);
+    private Vector3f position;
+    private final Vector3f direction = new Vector3f(0, 0, -1);
     private Matrix4f perspectiveMatrix;
     private Matrix4f viewMatrix;
 
-    public Camera(double width, double height, Vertex position) {
+    public Camera(double width, double height, Vector3f position) {
         this.position = position;
         this.aspectRatio = width / height;
         this.width = width;
@@ -50,7 +50,7 @@ public class Camera {
     }
 
     public Matrix4f makeViewMatrix() {
-        var negatedPosition = new Vector3f((float) -position.x, (float) -position.y, (float) -position.z);
+        var negatedPosition = new Vector3f(-position.x, -position.y, -position.z);
 
         return new Matrix4f()
                 .identity()
@@ -67,58 +67,49 @@ public class Camera {
         return viewMatrix;
     }
 
-    public Vertex getPosition() {
-        return position;
-    }
-
-    public void setPosition(Vertex position) {
-        this.position = position;
-        update();
-    }
-
-    public void moveForward(double amount) {
+    public void moveForward(float amount) {
         this.position.z -= amount;
         update();
     }
 
-    public void moveBack(double amount) {
+    public void moveBack(float amount) {
         this.position.z += amount;
         update();
 
     }
 
-    public void moveLeft(double amount) {
-        this.position.x += amount;
-        update();
-
-    }
-
-    public void moveRight(double amount) {
+    public void moveLeft(float amount) {
         this.position.x -= amount;
         update();
 
     }
 
-    public void moveUp(double amount) {
+    public void moveRight(float amount) {
+        this.position.x += amount;
+        update();
+
+    }
+
+    public void moveUp(float amount) {
         this.position.y -= amount;
         update();
 
     }
 
-    public void moveDown(double amount) {
+    public void moveDown(float amount) {
         this.position.y += amount;
         update();
     }
 
     public void addHorizontalRotation(double angle) {
         double radians = Math.toRadians(angle);
-        direction.x += Math.sin(radians);
+        direction.x += (float) Math.sin(radians);
 
     }
 
     public void addVerticalRotation(double angle) {
         double radians = Math.toRadians(angle);
-        direction.y += Math.sin(radians);
+        direction.y += (float) Math.sin(radians);
         update();
     }
 

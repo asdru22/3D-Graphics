@@ -7,7 +7,7 @@ import java.awt.event.ComponentEvent;
 
 public class RenderingFrame extends JFrame {
 
-    private RenderingPanel panel;
+    private final RenderingPanel panel;
 
     public RenderingFrame() {
         Container pane = this.getContentPane();

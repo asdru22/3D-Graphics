@@ -1,6 +1,5 @@
 package io;
 
-import math.Double2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -15,14 +14,12 @@ public class MouseListenerHandler implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
         updatePressedButtons(e, true);
-        Double2D pos = new Double2D(e.getX(), e.getY());
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         updatePressedButtons(e, false);
-        Double2D pos = new Double2D(e.getX(), e.getY());
 
     }
 

@@ -1,49 +1,29 @@
 package geom;
 
-import graphics.Vertex;
-import math.Matrix4D;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Triangle {
-    public final Vertex v1, v2, v3;
-    public final Point v1u, v2u, v3u;
-    public final BufferedImage texture;
+public record Triangle(Vector3f v1, Vector3f v2, Vector3f v3, Point v1u, Point v2u, Point v3u, BufferedImage texture) {
 
-    public Triangle(Vertex v1, Vertex v2, Vertex v3,
-                    Point v1u, Point v2u, Point v3u, BufferedImage texture) {
-        this.v1 = v1;
-        this.v2 = v2;
-        this.v3 = v3;
-        this.v1u = v1u;
-        this.v2u = v2u;
-        this.v3u = v3u;
-        this.texture = texture;
-    }
-
-    public void draw(Matrix4f perspective, Matrix4f view, double width, double height, BufferedImage img, double[] zBuffer) {
+    public void draw(Matrix4f perspective, Matrix4f view, BufferedImage img, double[] zBuffer) {
         // Apply perspective projection
-        Vertex v1 = transform(perspective,view,this.v1);
-        Vertex v2 = transform(perspective,view,this.v2);
-        Vertex v3 = transform(perspective,view,this.v3);
+        Vector3f v1 = transform(perspective, view, this.v1);
+        Vector3f v2 = transform(perspective, view, this.v2);
+        Vector3f v3 = transform(perspective, view, this.v3);
 
-        // Normalize to device coordinates
-        v1.normalizeToScreen(width, height);
-        v2.normalizeToScreen(width, height);
-        v3.normalizeToScreen(width, height);
 
         // Calculate triangle normal
-        Vertex ab = new Vertex(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
-        Vertex ac = new Vertex(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
-        Vertex norm = new Vertex(
+        Vector3f ab = new Vector3f(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+        Vector3f ac = new Vector3f(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+        Vector3f norm = new Vector3f(
                 ab.y * ac.z - ab.z * ac.y,
                 ab.z * ac.x - ab.x * ac.z,
                 ab.x * ac.y - ab.y * ac.x
         );
-        double normalLength = Math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
+        float normalLength = (float) Math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
         norm.x /= normalLength;
         norm.y /= normalLength;
         norm.z /= normalLength;
@@ -80,19 +60,9 @@ public class Triangle {
         }
     }
 
-    private Vertex transform(Matrix4f perspective, Matrix4f view, Vertex vertex) {
-        Vector3f temp = new Vector3f((float) vertex.x, (float) vertex.y, (float) vertex.z).
+    private Vector3f transform(Matrix4f perspective, Matrix4f view, Vector3f Vector3f) {
+        return new Vector3f(Vector3f.x, Vector3f.y, Vector3f.z).
                 mulPosition(perspective).mulPosition(view);
-        return new Vertex(temp.x, temp.y, temp.z);
-    }
-
-    private Vertex applyMatrix(Matrix4f matrix, Vertex vertex) {
-        double x = vertex.x * matrix.m00() + vertex.y * matrix.m10() + vertex.z * matrix.m20() + matrix.m30();
-        double y = vertex.x * matrix.m01() + vertex.y * matrix.m11() + vertex.z * matrix.m21() + matrix.m31();
-        double z = vertex.x * matrix.m02() + vertex.y * matrix.m12() + vertex.z * matrix.m22() + matrix.m32();
-        double w = vertex.x * matrix.m03() + vertex.y * matrix.m13() + vertex.z * matrix.m23() + matrix.m33();
-
-        return new Vertex(x / w, y / w, z / w);
     }
 
 }

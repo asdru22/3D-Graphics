@@ -4,9 +4,8 @@ import block.Dirt;
 import block.GrassBlock;
 import geom.Cube;
 import graphics.Camera;
-import graphics.Vertex;
 import io.InputHandler;
-import io.MousePositionHandler;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,7 +17,7 @@ public class RenderingScene {
     private final InputHandler inputHandler;
 
     public RenderingScene(int width, int height, InputHandler inputHandler) {
-        this.camera = new Camera(width, height, new Vertex(0, 0, 1000));
+        this.camera = new Camera(width, height, new Vector3f(0, 0, 100));
         this.inputHandler = inputHandler;
         this.cubes.add(new GrassBlock(0, 0, 0));
         this.cubes.add(new Dirt(0, -100, 0));
@@ -40,7 +39,7 @@ public class RenderingScene {
         if (inputHandler.keyHandler.spacePressed) camera.moveUp(1);
         if (inputHandler.keyHandler.shiftPressed) camera.moveDown(1);
 
-        double sensitivity = 0.2;
+        double sensitivity = 0.5;
         int centerX = (int) (camera.width / 2);
         int centerY = (int) (camera.height / 2);
 
@@ -51,14 +50,14 @@ public class RenderingScene {
             int deltaY = mousePos.y - centerY;
 
             if (deltaX != 0 || deltaY != 0) {
-                camera.addHorizontalRotation(deltaX * sensitivity);
-                camera.addVerticalRotation(-deltaY * sensitivity);
+                camera.addHorizontalRotation(deltaY * sensitivity);
+                camera.addVerticalRotation(-deltaX * sensitivity);
             }
 
             robot.mouseMove(centerX, centerY);
 
         } catch (AWTException e) {
-            e.printStackTrace();
+            System.err.println("Mouse error");
         }
     }
 
