@@ -1,35 +1,32 @@
-
 package geom;
 
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public record Triangle(Vector4f v1, Vector4f v2, Vector4f v3, Point v1u, Point v2u, Point v3u, BufferedImage texture) {
+public record Triangle(Vector3f v1, Vector3f v2, Vector3f v3, Point v1u, Point v2u, Point v3u, BufferedImage texture) {
 
-    public void draw(Matrix4f perspective, BufferedImage img, double[] zBuffer) {
+    public void draw(Matrix4f perspective, Matrix4f view, BufferedImage img, double[] zBuffer) {
         // Apply perspective projection
-        Vector4f v1 = transform(perspective, this.v1);
-        Vector4f v2 = transform(perspective, this.v2);
-        Vector4f v3 = transform(perspective, this.v3);
+        Vector3f v1 = transform(perspective, view, this.v1);
+        Vector3f v2 = transform(perspective, view, this.v2);
+        Vector3f v3 = transform(perspective, view, this.v3);
 
-        // Normalize homogeneous coordinates (divide by w)
-        v1.div(v1.w);
-        v2.div(v2.w);
-        v3.div(v3.w);
 
         // Calculate triangle normal
-        Vector4f ab = new Vector4f(v2).sub(v1);
-        Vector4f ac = new Vector4f(v3).sub(v1);
-        Vector4f norm = new Vector4f(
+        Vector3f ab = new Vector3f(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+        Vector3f ac = new Vector3f(v3.x - v1.x, v3.y - v1.y, v3.z - v1.z);
+        Vector3f norm = new Vector3f(
                 ab.y * ac.z - ab.z * ac.y,
                 ab.z * ac.x - ab.x * ac.z,
-                ab.x * ac.y - ab.y * ac.x,
-                0.0f
+                ab.x * ac.y - ab.y * ac.x
         );
-        norm.normalize();
+        float normalLength = (float) Math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z);
+        norm.x /= normalLength;
+        norm.y /= normalLength;
+        norm.z /= normalLength;
 
         // Get the triangle's bounding box
         int minX = (int) Math.max(0, Math.ceil(Math.min(v1.x, Math.min(v2.x, v3.x))));
@@ -63,7 +60,9 @@ public record Triangle(Vector4f v1, Vector4f v2, Vector4f v3, Point v1u, Point v
         }
     }
 
-    private Vector4f transform(Matrix4f matrix, Vector4f vector) {
-        return new Vector4f(vector).mul(matrix);
+    private Vector3f transform(Matrix4f perspective, Matrix4f view, Vector3f Vector3f) {
+        return new Vector3f(Vector3f.x, Vector3f.y, Vector3f.z).
+                mulPosition(perspective).mulPosition(view);
     }
+
 }

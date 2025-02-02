@@ -3,7 +3,6 @@ package geom;
 import graphics.Camera;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,15 +24,15 @@ public class Cube {
 
         Vector3f offset = this.position;
 
-        // Vector4f Coordinates with offset
-        Vector4f v1 = new Vector4f(-scale + offset.x, -scale + offset.y, -scale + offset.z,1);
-        Vector4f v2 = new Vector4f(scale + offset.x, -scale + offset.y, -scale + offset.z,1);
-        Vector4f v3 = new Vector4f(scale + offset.x, scale + offset.y, -scale + offset.z,1);
-        Vector4f v4 = new Vector4f(-scale + offset.x, scale + offset.y, -scale + offset.z,1);
-        Vector4f v5 = new Vector4f(-scale + offset.x, -scale + offset.y, scale + offset.z,1);
-        Vector4f v6 = new Vector4f(scale + offset.x, -scale + offset.y, scale + offset.z,1);
-        Vector4f v7 = new Vector4f(scale + offset.x, scale + offset.y, scale + offset.z,1);
-        Vector4f v8 = new Vector4f(-scale + offset.x, scale + offset.y, scale + offset.z,1);
+        // Vector3f Coordinates with offset
+        Vector3f v1 = new Vector3f(-scale + offset.x, -scale + offset.y, -scale + offset.z);
+        Vector3f v2 = new Vector3f(scale + offset.x, -scale + offset.y, -scale + offset.z);
+        Vector3f v3 = new Vector3f(scale + offset.x, scale + offset.y, -scale + offset.z);
+        Vector3f v4 = new Vector3f(-scale + offset.x, scale + offset.y, -scale + offset.z);
+        Vector3f v5 = new Vector3f(-scale + offset.x, -scale + offset.y, scale + offset.z);
+        Vector3f v6 = new Vector3f(scale + offset.x, -scale + offset.y, scale + offset.z);
+        Vector3f v7 = new Vector3f(scale + offset.x, scale + offset.y, scale + offset.z);
+        Vector3f v8 = new Vector3f(-scale + offset.x, scale + offset.y, scale + offset.z);
 
         // UV Coordinates
         Point uv1 = new Point(0, 0);
@@ -62,9 +61,10 @@ public class Cube {
     }
 
     public void draw(BufferedImage img, double[] zBuffer, Camera cam) {
-        Matrix4f cameraMatrix = cam.getProjectionView();
+        Matrix4f perspective = cam.getPerspective();
+        Matrix4f view = cam.getView();
         for (Triangle t : triangles) {
-            t.draw(cameraMatrix, img, zBuffer);
+            t.draw(perspective, view, img, zBuffer);
         }
     }
 }
